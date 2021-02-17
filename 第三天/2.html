@@ -7,9 +7,28 @@
     <title>Document</title>
   </head>
   <body>
+    <div id="a">
+          
+      <p>姓名 1</p>
+          
+      <p>姓名 2</p>
+          
+      <p>姓名 3</p>
+          
+      <p>姓名 4</p>
+          
+      <p>姓名 6</p>
+      <p>姓名 7</p>
+      ……………   
+    </div>
     <script>
-      var n = 'miao wei ke tang'.indexOf('wei', 6)
-      console.log(n)
+      const p = document.createElement('p')
+      p.innerHTML = '姓名 5'
+      a.insertBefore(p, a.children[4])
+      const oP = a.querySelectorAll('p')
+      const len = a.querySelectorAll('p').length
+      // console.log(oP)
+      oP[len - 1].remove()
     </script>
   </body>
 </html>
