@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .left{
+            float: left;
+        }
+        .right{
+            float: right;
+            padding:10px 30px 10px;
+        }
+        li{
+            list-style-type: none;
+            width: 50%;
+            height: 350px;
+            border:1px solid #ccc;padding:10px;margin:10px;display:flex;
+        }
+        .new-price{
+            color:red;
+            font-size:20px;
+        }
+        .old-price{
+            text-decoration: line-through;
+            font-size: 16px;
+        }
+        button{
+            display:block;color:#fff;background:red;width:80px;height:40px;line-height:40px;text-align:center
+        }
+        input{
+            width:120px;height:30px;font-size:24px
+        }
+    </style>
+<body>
+    <div id="app" >
+        <goods-item :goodslist="goodsList"></goods-item>
+    </div>
+    <template id="goods-item">
+      <div>
+        <ul>
+            <li v-for="(item,i) in goodslist" :key="item.id">
+                <div class="left">
+                    <img src="" :alt="item.title">
+                </div>
+                <div class="right">
+                    <h2>{{item.title}}</h2>
+                    <span class="goods-time">上架日期:{{item.add_time}}</span>
+                    <p class="goods-number">库存数量:{{item.stock_quantity}}</p>
+                    <p class="goods-price"><span class="new-price">¥{{item.sell_price}}</span>
+                    <span class="old-price">¥{{item.market_price}}</span></p>
+                    <p class="buy-number">购买数量: <input type="number" :value="buyNumber"></p>
+                    <button @click="buyGoods(item.id)" :data-index="i">立即购买</button>
+                </div>
+            </li>
+        </ul>
+      </div>
+    </template>
+    <script src="js/vue.js"></script>
+    <script src="js/vue-router_3.0.2.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/axios.js"></script>
+    <script>
+        
+        const goodsItem = {
+            template:'#goods-item',
+            props:['goodslist'],
+            data(){
+                return {
+                    buyNumber:1
+                }
+            },
+            methods:{
+                buyGoods(id){
+                    this.$router.push({path:'buy',
+                        query:{
+                            id,
+                            num:this.buyNumber
+                        }
+                    })
+                }
+            },  
+        }
+        const buy = {
+            template:'buy组件'
+        }
+        const router = new VueRouter({
+            routes:[
+                { path: 'buy' , component:buy}
+            ]
+        })
+        const vm = new Vue({
+            el: '#app',
+            name: 'App',
+            data:{
+                goodsList:[]
+            },
+            methods:{
+                async getGoodsList(){
+                    const {data: res} = await axios.get('http://www.liulongbin.top:3005/api/getgoods?pageindex=0')
+                    if(res.status!== 0) return console.log('获取数据列表失败');
+                    this.goodsList = res.message
+                }
+            },
+            mounted() {
+                this.getGoodsList()
+               
+            },
+            components:{
+                'goods-item':goodsItem
+            },
+            router
+        });
+        
+    </script>
+</body>
+
+</html>
