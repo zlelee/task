@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table{
+            width: 800px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        tr{
+            height: 50px;
+        }
+        table,th,td{
+            border: 1px solid #ccc;
+        }
+        th,td{
+            min-width: 70px;
+        }
+        .red{
+            background-color: red;
+        }
+        .orange{
+            background-color: orange;
+        }
+    </style>
+<body>
+    <div id="app">
+        <my-table :goods-list="goodsList"></my-table>
+    </div>
+    <template id="myTable">
+        <div>
+            <table >
+               <thead>
+                  <tr>
+                    <th>商品编号</th>
+                    <th>商品名称</th>
+                    <th>商品图片</th>
+                    <th>商品描述</th>
+                    <th>市场价</th>
+                    <th>优惠价</th>
+                    <th>库存数量</th>
+                    <th>点击量</th>
+                    <th>上架时间</th>
+                  </tr>
+               </thead>
+               <tbody>
+                <tr v-for="item in goodsList">
+                    <td>{{item.id}}</td>
+                    <td>{{item.title}}</td>
+                    <td><img :src="item.img_url" :alt="item.img_url"></td>
+                    <td>{{item.zhaiyao}}</td>
+                    <td>{{item.market_price}}</td>
+                    <td>{{item.sell_price}}</td>
+                    <td>{{item.stock_quantity}}</td>
+                    <td>{{item.click}}</td>
+                    <td>{{item.add_time}}</td>
+                </tr>
+               </tbody>
+            </table>
+        </div>
+    </template>
+    <script src="js/vue2.6.11.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/jquery.js"></script>
+    <script>
+        const myTable = {
+            props:['goods-list'],
+            template:'#myTable',
+        }
+        const vm = new Vue({
+            el: '#app',
+            name: 'App',
+            // 组件
+            data:{
+                goodsList:[]
+            },
+            components: {
+                "my-table": myTable
+            },
+            created() {
+                this.getGoodsList()
+            },
+            methods: {
+                async getGoodsList(){
+                    const {data: res} = await axios.get('http://www.liulongbin.top:3005/api/getgoods?pageindex=0')
+                    if(res.status!== 0) return console.log('获取商品列表数据失败');
+                    this.goodsList = res.message
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>
